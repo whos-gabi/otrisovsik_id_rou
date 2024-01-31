@@ -7,12 +7,14 @@ from faker import Faker
 fake = Faker('ro_RO')
 
 from user_id import UserID
+import asyncio
 
 
-def generateUsersJSON(nr):
+async def generateUsersJSON(nr):
     users = []
     for i in range(nr):
-        users.insert(i, generateUser())
+        usr  = await generateUser()
+        users.insert(i, usr)
         print("Generating ID: ",i+1,"/",nr)
     return users
 
@@ -65,14 +67,6 @@ def customID():
     county_abbr=fake.state_abbr()
     residence_address = "Jud."+county_abbr+" "+spclep+'\n'+fake.street_address().replace(". ", ".")
     countiID = getCountiObj(county_abbr)["id"]
-    #custom input test
-    # birthdate = "2005-01-07 00:00:00"
-    # birthdate = datetime.datetime.strptime(birthdate, '%Y-%m-%d %H:%M:%S')
-    # birthplace = "R. Moldova mun. Bălți"
-    # spclep = "Buc. Sector 6"
-    # county_abbr= "B6"
-    # residence_address = "Jud."+county_abbr+" "+spclep+'\n'+"Bd. Iuliu Maniu 1-3"
-    # countiID = getCountiObj(county_abbr)["id"]
 
     cnp  = generateCNP(birthdate, sex, countiID)
 
@@ -82,10 +76,10 @@ def customID():
 
 
 
-def randomID():
+async def randomID():
      #read a number
     n = int(input("Numarul de Fake ID-s: "))
-    users = generateUsersJSON(n)
+    users = await generateUsersJSON(n)
     # lopp users 
     for user in users:
         printID(user)
@@ -117,18 +111,14 @@ def readStartSettings():
 
 
 global genType 
-def main():
-    
+async def main():
     readStartSettings()     
 
     if genType == 1:
         customID()
     elif genType == 2:
-        randomID()
-    
-   
-    
+        await randomID()
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
 

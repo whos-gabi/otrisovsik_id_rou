@@ -1,3 +1,6 @@
-output/*
+output/*.png
+output/pfps/*.png
 __pycache__
 .DS_Store
+*.zip
+.env

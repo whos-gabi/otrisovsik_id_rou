@@ -1,15 +1,19 @@
 from PIL import Image, ImageFont, ImageDraw
 import datetime
 from user_id import UserID
+from gen_face import generate_person_img
 
 CHAR_HEIGHT = 90
 
 def getPersonImage(person: UserID):
-    # age = datetime.datetime.now() - person.birth_date 
-    # age = int(age.days/365)
-
+    date = datetime.datetime.strptime(person.birth_date, '%d.%m.%y')
+    age = datetime.datetime.now() - date 
     sex = person.sex
-    return "src/face/daniil_pfp.png" 
+    if sex == "M":
+        sex = "male"
+    else:
+        sex = "female"
+    return generate_person_img(sex, age) 
     # return "src/face/danut.png" 
 
 def draw_text_with_spacing(image: ImageDraw, text, coordinates, letter_spacing=-20, font: ImageFont = None, text_color="black", line_spacing=5):
@@ -24,7 +28,7 @@ def draw_text_with_spacing(image: ImageDraw, text, coordinates, letter_spacing=-
             image.text((x, y), char, fill=text_color, font=font)
             x += char_width + letter_spacing
 
-async def printID(person: UserID):
+def printID(person: UserID):
     try:
         canvas = Image.open("src/canvasID_blank.png")
         pfp = Image.open(getPersonImage(person))

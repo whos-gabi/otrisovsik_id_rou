@@ -52,14 +52,14 @@ async def handle_generate_id(message):
     await bot.send_message(message.chat.id, "Generating ID 🪪⏳")
 
     user_data = await generateUser()
-    id_path = await printID(user_data)
+    id_path = printID(user_data)
 
     if os.path.exists(id_path):
         try:
             with open(id_path, 'rb') as id_image:
                 await message.answer_photo(id_image)
-            with open(id_path, 'rb') as id_image:
-                await message.answer_document(id_image)
+            # with open(id_path, 'rb') as id_image:
+            #     await message.answer_document(id_image)
         except Exception as e:
             await message.reply(f"Error: {e}")
         await bot.send_message(message.chat.id, "Done ✅")
