@@ -24,6 +24,30 @@ def generateCNP(date, sex, countyIndex):
     randomNr = random.randint(1,999)
     cnp12 = str(sex) + str(date.year)[2:] + str(date.month).zfill(2) + str(date.day).zfill(2) + str(countyIndex).zfill(2) + str(randomNr).zfill(3) 
     cnp = addControlNr(cnp12)
-    
     return cnp
+    
+
+def readSexOption(digits = False):
+    sex = str(input("Sexul (m/f):"))
+    try:
+        if isinstance(sex, str) == False:
+            raise TypeError
+        if sex == 'm' or sex == 'f':
+            if digits:
+                if sex == 'm':
+                    return 5
+                else:
+                    return 6
+            return sex 
+        else:
+            raise ValueError
+
+    except ValueError:
+        print("Sexul poate fi doar m sau f")
+        readSexOption()
+    except TypeError:
+        print("Caracterul introdus nu este valid")
+        readSexOption()
+    
+
     
