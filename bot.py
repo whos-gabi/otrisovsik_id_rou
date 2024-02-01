@@ -1,15 +1,14 @@
 from dotenv import load_dotenv
 from fakedraw import printID
 from main import generateUser
-
-import aiogram
 from aiogram import Bot, Dispatcher, executor, types
-import asyncio
+from datetime import datetime, timedelta
 import os
 
 
 load_dotenv()
 global id_path
+user_cooldowns = {}
 # from main import generateID
 
 # to update requirements.txt
@@ -44,11 +43,25 @@ async def handle_start(message):
 	
 @dp.message_handler(commands=['help'])
 async def handle_help(message):
+    print(user_cooldowns) # debug
     await bot.send_message(message.chat.id, "I am DocWriterRo, and I can help you generate an ID.\n You can use the following commands: \n/start \n/help \n/generate_id")
 	
 
 @dp.message_handler(commands=['generate_id'])
 async def handle_generate_id(message):
+    #cooldown
+    user_id = message.from_user.id
+    current_time = datetime.now()
+
+    if user_id in user_cooldowns and current_time < user_cooldowns[user_id]:
+        await message.reply("You need to wait before generating another ID.")
+        return
+
+    # Set the cooldown for the user (e.g., 60 seconds)
+    user_cooldowns[user_id] = current_time + timedelta(seconds=30)
+
+
+
     await bot.send_message(message.chat.id, "Generating ID 🪪⏳")
 
     user_data = await generateUser()
@@ -62,7 +75,7 @@ async def handle_generate_id(message):
             #     await message.answer_document(id_image)
         except Exception as e:
             await message.reply(f"Error: {e}")
-        await bot.send_message(message.chat.id, "Done ✅")
+        # await bot.send_message(message.chat.id, "Done ✅")
         os.remove(id_path)
     else:
         await message.reply("Nu s-a putut genera buletinul de identitate.")

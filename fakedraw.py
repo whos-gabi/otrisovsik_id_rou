@@ -1,3 +1,4 @@
+import os
 from PIL import Image, ImageFont, ImageDraw
 import datetime
 from user_id import UserID
@@ -30,8 +31,9 @@ def draw_text_with_spacing(image: ImageDraw, text, coordinates, letter_spacing=-
 
 def printID(person: UserID):
     try:
+        pfp_path = getPersonImage(person)
         canvas = Image.open("src/canvasID_blank.png")
-        pfp = Image.open(getPersonImage(person))
+        pfp = Image.open(pfp_path)
         pfpWidth, pfpHeight = pfp.size
         pfp = pfp.resize((830+15,1040+20))
         canvas.paste(pfp, (284, 376), mask=pfp)
@@ -76,6 +78,7 @@ def printID(person: UserID):
 
         print("Saving: "+str(person.cnp)+"_ID.png")
         canvas.save("output/"+str(person.cnp)+"_ID.png")
+        os.remove(pfp_path)
     except Exception as e:
         print("Error: "+str(e))
         return None
